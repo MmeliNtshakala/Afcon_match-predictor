@@ -13,20 +13,29 @@ res.raise_for_status()
 soup = BeautifulSoup(res.text, "lxml")
 
 teams = []
-tables = soup.find_all("table", class_= "wikitable")[:6]
 
-for x, table in enumerate(tables):
-    group = chr(65 +x)
-    rows = table.find_all("tr")[1:]
+for header in soup.find_all(["h2", "h3"]):
+    if "Qualified teams" in header.get_text():
+        table = header.find_next("table", class_="wikitable")
+        break
 
-    for z in rows:
-        colomns = z.find_all("td")
-        if len(colomns) >= 2:
-            teams.append({
-                "team": colomns[1].get_text(strip=True),
-                "group" : group            
-                })
+
+rows = table.find("tbody").find_all("tr")
+
+for z in rows:
+    colomns = z.find_all("td")
+    if len(colomns) < 8:
+        continue
+
+    teams.append({
+        "team": colomns[0].get_text(strip=True),
+        "qualification" : colomns[1].get_text(strip=True),
+        "appearances" : colomns[3].get_text(strip=True),
+        "best_perfomance" : colomns[-2].get_text(strip=True),
+        "fifa_Rank": colomns[1].get_text(strip=True)           
+        })
+        
 dataframe = pd.DataFrame(teams)
 dataframe.to_csv("afcon_teams.csv", index=False)
 
-print("DONE")
+print(f"DONE {len(dataframe)} qualified")
