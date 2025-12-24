@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import pandas as pd 
 
 link = "https://www.transfermarkt.com"
 afcon_link = f"{link}/africa-cup-of-nations/startseite/pokalwettbewerb/AFCN?saison_id=2024"
@@ -49,6 +50,12 @@ for team in teams:
                                "position": position,
                                "market_value": market_value
                                })
-    
+    import time 
     team["players"] = players
-    
+    time.sleep(5)
+
+
+df = pd.DataFrame(teams)
+df.to_csv("Afcon_2024_teams.csv", index=False)
+
+print("Scraping complete")
