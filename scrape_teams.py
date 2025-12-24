@@ -32,7 +32,7 @@ for z in rows:
         "qualification" : colomns[1].get_text(strip=True),
         "appearances" : colomns[3].get_text(strip=True),
         "best_perfomance" : colomns[-2].get_text(strip=True),
-        "fifa_Rank": colomns[1].get_text(strip=True)           
+        "fifa_Rank": colomns[-1].get_text(strip=True)           
         })
         
 dataframe = pd.DataFrame(teams)
