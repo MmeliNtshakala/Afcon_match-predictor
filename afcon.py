@@ -34,7 +34,7 @@ for x in rows[1:]:
 
 # Scrape players for each team
 for team in teams:
-    res = requests.get(team["Link"], headers=HEADERS)
+    res = requests.get(team["link"], headers=HEADERS)
     team_soup = BeautifulSoup(res.text, "lxm")
     player_table = team_soup.find("table", {"class": "items"})
 
