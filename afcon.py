@@ -35,14 +35,14 @@ for x in rows[1:]:
 # Scrape players for each team
 for team in teams:
     res = requests.get(team["link"], headers=HEADERS)
-    team_soup = BeautifulSoup(res.text, "lxm")
+    team_soup = BeautifulSoup(res.text, "lxml")
     player_table = team_soup.find("table", {"class": "items"})
 
     players = []
     if player_table:
         for x in player_table.find_all("tr")[1:]:
             colomns = x.find_all("td")
-            if colomns:
+            if len(colomns) >= 6:
                 player_name = colomns[1].get_text(strip=True)
                 position = colomns[4].get_text(strip=True)
                 market_value = colomns[-1].get_text(strip=True)
@@ -50,6 +50,8 @@ for team in teams:
                                "position": position,
                                "market_value": market_value
                                })
+            else:
+                continue
     import time 
     team["players"] = players
     time.sleep(5)
