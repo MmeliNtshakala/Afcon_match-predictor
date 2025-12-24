@@ -16,4 +16,39 @@ HEADERS = { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
 response = requests.get(afcon_link, headers=HEADERS)
 soup = BeautifulSoup(response.text, "lxml")
 
-print(soup)
+
+teams = [] # put the teams in this list 
+table = soup.find("table", {"class": "items"})
+rows  =  table.find_all("tr")
+
+for x in rows[1:]:
+    colomns = x.find_all("td")
+
+    if colomns:
+        teamName = colomns[1].get_text(strip=True)
+        team_link = link + colomns[1].find("a")["href"]
+        
+        teams.append({"team": teamName, "link": team_link})
+
+
+# Scrape players for each team
+for team in teams:
+    res = requests.get(team["Link"], headers=HEADERS)
+    team_soup = BeautifulSoup(res.text, "lxm")
+    player_table = team_soup.find("table", {"class": "items"})
+
+    players = []
+    if player_table:
+        for x in player_table.find_all("tr")[1:]:
+            colomns = x.find_all("td")
+            if colomns:
+                player_name = colomns[1].get_text(strip=True)
+                position = colomns[4].get_text(strip=True)
+                market_value = colomns[-1].get_text(strip=True)
+                players.append({"name": player_name,
+                               "position": position,
+                               "market_value": market_value
+                               })
+    
+    team["players"] = players
+    
