@@ -1,10 +1,11 @@
 import requests
 from bs4 import BeautifulSoup
+import pandas as pd
 
 link = "https://en.wikipedia.org/wiki/2025_Africa_Cup_of_Nations"
 
 res = requests.get(link)
-soup = BeautifulSoup(res.text, "html")
+soup = BeautifulSoup(res.text, "lxml")
 
 teams = []
 tables = soup.find_all("table", class_= "wikitable")[:6]
@@ -20,3 +21,7 @@ for x, y in enumerate(tables):
                 "team": colomns[1].get_text(strip=True),
                 "group" : group            
                 })
+dataframe = pd.DataFrame(teams)
+dataframe.to_csv("afcon_teams.csv", Index=False)
+
+print("DONE")
